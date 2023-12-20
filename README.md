@@ -1,55 +1,41 @@
+<h1>Setting up Celery with Django on Windows</h1>
 
-Certainly! Here's an improved version with proper styling for a README file on GitHub:
+<h2>Introduction</h2>
+<p>This guide walks you through the process of setting up Celery with Django on a Windows environment. Celery is a distributed task queue system that can be used to offload time-consuming tasks from your Django application.</p>
 
-Setting up Celery with Django on Windows
-Introduction
-This guide walks you through the process of setting up Celery with Django on a Windows environment. Celery is a distributed task queue system that can be used to offload time-consuming tasks from your Django application.
+<h2>Prerequisites</h2>
+<ul>
+    <li>Python installed</li>
+    <li>Django project set up</li>
+    <li>Windows operating system</li>
+</ul>
 
-Prerequisites
-Python installed
-Django project set up
-Windows operating system
-Step 1: Install Celery
-bash
-Copy code
-pip install celery
-Step 2: Create a Django App
-bash
-Copy code
-django-admin startapp mainapp
-Step 3: Install Redis on Windows
-Follow the instructions at https://github.com/tporadowski/redis/releases.
+<h2>Step 1: Install Celery</h2>
+<pre><code>pip install celery</code></pre>
 
-After installation, open a command prompt, navigate to C:\Program Files\Redis\, and run:
+<h2>Step 2: Create a Django App</h2>
+<pre><code>django-admin startapp mainapp</code></pre>
 
-bash
-Copy code
-redis-cli.exe
-Verify if Redis is running:
-
-bash
-Copy code
-127.0.0.1:6379> ping
+<h2>Step 3: Install Redis on Windows</h2>
+<p>Follow the instructions at <a href="https://github.com/tporadowski/redis/releases" target="_blank">https://github.com/tporadowski/redis/releases</a>.</p>
+<p>After installation, open a command prompt, navigate to C:\Program Files\Redis\, and run:</p>
+<pre><code>redis-cli.exe</code></pre>
+<p>Verify if Redis is running:</p>
+<pre><code>127.0.0.1:6379&gt; ping
 PONG
-127.0.0.1:6379>
-Step 4: Configure Celery Settings
-In your Django project's settings, add the following configurations:
+127.0.0.1:6379&gt;</code></pre>
 
-python
-Copy code
-# settings.py
+<h2>Step 4: Configure Celery Settings</h2>
+<pre><code># settings.py
 
 CELERY_BROKER_URL = "redis://127.0.0.1:6379"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/Kolkata'
-Step 5: Create Celery Configuration
-Create a celery.py file in your project folder:
+CELERY_TIMEZONE = 'Asia/Kolkata'</code></pre>
 
-python
-Copy code
-# celery.py
+<h2>Step 5: Create Celery Configuration</h2>
+<pre><code># celery.py
 
 from __future__ import absolute_import, unicode_literals
 import os
@@ -67,13 +53,10 @@ app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
-    print(f"Request: {self.request!r}")
-Step 6: Create a Celery Task
-Create a tasks.py file in your app:
+    print(f"Request: {self.request!r}")</code></pre>
 
-python
-Copy code
-# mainapp/tasks.py
+<h2>Step 6: Create a Celery Task</h2>
+<pre><code># mainapp/tasks.py
 
 from celery import shared_task
 
@@ -81,62 +64,44 @@ from celery import shared_task
 def test_func(self):
     for i in range(10):
         print(i)
-    return "Done"
-Step 7: Update Your Views
-In your views.py, add:
+    return "Done"</code></pre>
 
-python
-Copy code
-# mainapp/views.py
+<h2>Step 7: Update Your Views</h2>
+<pre><code># mainapp/views.py
 
 from django.shortcuts import render, HttpResponse
 from .tasks import test_func
 
 def test(request):
     test_func.delay()
-    return HttpResponse("Done")
-Step 8: Install Redis Python Package
-bash
-Copy code
-pip install redis
-Step 9: Run Celery Worker
-bash
-Copy code
-celery -A your_project_name.celery worker -l info
-For Windows:
+    return HttpResponse("Done")</code></pre>
 
-bash
-Copy code
-celery -A your_project_name.celery worker --pool=solo -l info
-Step 10: Update Django Settings
-Add the following to your Django settings:
+<h2>Step 8: Install Redis Python Package</h2>
+<pre><code>pip install redis</code></pre>
 
-python
-Copy code
-# settings.py
+<h2>Step 9: Run Celery Worker</h2>
+<pre><code>celery -A your_project_name.celery worker -l info</code></pre>
+<p>For Windows:</p>
+<pre><code>celery -A your_project_name.celery worker --pool=solo -l info</code></pre>
 
-CELERY_RESULT_BACKEND = "django-db"
-Install Django Celery Results:
+<h2>Step 10: Update Django Settings</h2>
+<pre><code># settings.py
 
-bash
-Copy code
-pip install django-celery-results
-Step 11: Update __init__.py in Project Folder
-Add the following to __init__.py in your project folder:
+CELERY_RESULT_BACKEND = "django-db"</code></pre>
+<p>Install Django Celery Results:</p>
+<pre><code>pip install django-celery-results</code></pre>
 
-python
-Copy code
-# __init__.py
+<h2>Step 11: Update __init__.py in Project Folder</h2>
+<pre><code># __init__.py
 
 from .celery import app as celery_app
 
-__all__ = ('celery_app',)
-Step 12: Install Django Celery Beat
-bash
-Copy code
-pip install django-celery-beat
-Step 13: Run Celery Beat
-bash
-Copy code
-celery -A your_project_name beat -l info
-This guide assumes a basic understanding of Django and Celery. If you encounter any issues, refer to the official documentation for more details: Django | Celery.
+__all__ = ('celery_app',)</code></pre>
+
+<h2>Step 12: Install Django Celery Beat</h2>
+<pre><code>pip install django-celery-beat</code></pre>
+
+<h2>Step 13: Run Celery Beat</h2>
+<pre><code>celery -A your_project_name beat -l info</code></pre>
+
+<p>This guide assumes a basic understanding of Django and Celery. If you encounter any issues, refer to the official documentation for more details: Django | Celery.</p>
